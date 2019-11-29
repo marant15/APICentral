@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Services.Models
 {
-    class ProductDTO
+    public class ProductPutDTO
     {
+        public string Name { get; set; }
+
+        public int Stock { get; set; }
     }
 }

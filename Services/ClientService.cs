@@ -6,6 +6,7 @@ using Services.Models;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Serialization;
 
 namespace Services
 {
@@ -39,7 +40,7 @@ namespace Services
 
         public async Task<bool> CreateAsync(ClientDTO client)
         {
-            String json = JsonConvert.SerializeObject(client);
+            String json = JsonConvert.SerializeObject(client,new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
             StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await this.client.PostAsync(apiUrl+ "/client-management/clients", data);
             if ((int)response.StatusCode == 200)
@@ -49,7 +50,7 @@ namespace Services
 
         public async Task<bool> UpdateAsync(ClientUpdateDTO client, String id)
         {
-            String json = JsonConvert.SerializeObject(client);
+            String json = JsonConvert.SerializeObject(client, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
             StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await this.client.PutAsync(apiUrl + "/client-management/clients/"+id, data);
             if ((int)response.StatusCode == 200)

@@ -9,37 +9,44 @@ using Services.Models;
 
 namespace APICentral.Controllers
 {
-    [Route("crm-api/clients")]
-    public class ClientController : Controller
+    [Route("crm-api/products")]
+    public class ProductController : Controller
     {
-        private IClientService _clientService;
+        private IProductService _productService;
         private IConfiguration _configuration;
 
-        public ClientController(IConfiguration configuration, IClientService clientService)
+        public ProductController(IConfiguration configuration, IProductService productService)
         {
             _configuration = configuration;
-            _clientService = clientService;
+            _productService = productService;
         }
 
         // GET: api/<controller>
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_clientService.GetAllClientAsync().Result);
+            return Ok(_productService.GetAllProductsAsync().Result);
+        }
+
+        [HttpGet]
+        [Route("list")]
+        public IActionResult Get([FromQuery]string ids)
+        {
+            return Ok(_productService.GetSomeProductsAsync(ids).Result);
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public IActionResult Get(String id)
+        public IActionResult GetOne(String id)
         {
-            return Ok(_clientService.GetClientAsync(id).Result);
+            return Ok(_productService.GetProductAsync(id).Result);
         }
 
         // POST api/<controller>
         [HttpPost]
-        public IActionResult Post([FromBody]ClientDTO client)
+        public IActionResult Post([FromBody]ProductPostDTO product)
         {
-            bool status = _clientService.CreateAsync(client).Result;
+            bool status = _productService.CreateAsync(product).Result;
             if (status)
             {
                 return Ok();
@@ -52,9 +59,9 @@ namespace APICentral.Controllers
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public IActionResult Put(String id, [FromBody]ClientUpdateDTO client)
+        public IActionResult Put(String id, [FromBody]ProductPutDTO product)
         {
-            bool status = _clientService.UpdateAsync(client,id).Result;
+            bool status = _productService.UpdateAsync(product, id).Result;
             if (status)
             {
                 return Ok();
@@ -69,7 +76,7 @@ namespace APICentral.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(String id)
         {
-            bool status = _clientService.DeleteAsync(id).Result;
+            bool status = _productService.DeleteAsync(id).Result;
             if (status)
             {
                 return Ok();
