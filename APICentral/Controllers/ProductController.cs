@@ -46,45 +46,22 @@ namespace APICentral.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]ProductPostDTO product)
         {
-            bool status = _productService.CreateAsync(product).Result;
-            if (status)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("error");
-            }
+            return Ok(_productService.CreateAsync(product).Result);
         }
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         public IActionResult Put(String id, [FromBody]ProductPutDTO product)
         {
-            bool status = _productService.UpdateAsync(product, id).Result;
-            if (status)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("error");
-            }
+            return Ok(_productService.UpdateAsync(product, id).Result);
         }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(String id)
         {
-            bool status = _productService.DeleteAsync(id).Result;
-            if (status)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("error");
-            }
+            _productService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

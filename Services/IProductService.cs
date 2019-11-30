@@ -14,10 +14,10 @@ namespace Services
 
         Task<List<ProductGetDTO>> GetSomeProductsAsync(string codes);
 
-        Task<bool> CreateAsync(ProductPostDTO product);
+        Task<ProductGetDTO> CreateAsync(ProductPostDTO product);
 
-        Task<bool> UpdateAsync(ProductPutDTO product, String id);
+        Task<ProductGetDTO> UpdateAsync(ProductPutDTO product, String id);
 
-        Task<bool> DeleteAsync(string id);
+        void DeleteAsync(string id);
     }
 }

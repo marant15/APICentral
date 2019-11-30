@@ -12,10 +12,10 @@ namespace Services
 
         Task<List<ClientDTO>> GetAllClientAsync();
 
-        Task<bool> CreateAsync(ClientDTO client);
+        Task<ClientDTO> CreateAsync(ClientDTO client);
 
-        Task<bool> UpdateAsync(ClientUpdateDTO client, String id);
+        Task<ClientDTO> UpdateAsync(ClientUpdateDTO client, String id);
 
-        Task<bool> DeleteAsync(string id);
+        void DeleteAsync(string id);
     }
 }

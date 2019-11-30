@@ -39,45 +39,22 @@ namespace APICentral.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]ClientDTO client)
         {
-            bool status = _clientService.CreateAsync(client).Result;
-            if (status)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("error");
-            }
+            return Ok(_clientService.CreateAsync(client).Result);
         }
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         public IActionResult Put(String id, [FromBody]ClientUpdateDTO client)
         {
-            bool status = _clientService.UpdateAsync(client,id).Result;
-            if (status)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("error");
-            }
+            return Ok(_clientService.UpdateAsync(client,id).Result);
         }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(String id)
         {
-            bool status = _clientService.DeleteAsync(id).Result;
-            if (status)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("error");
-            }
+            _clientService.DeleteAsync(id);
+            return Ok();
         }
     }
 }

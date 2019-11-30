@@ -38,32 +38,46 @@ namespace Services
             return clients;
         }
 
-        public async Task<bool> CreateAsync(ClientDTO client)
+        public async Task<ClientDTO> CreateAsync(ClientDTO client)
         {
-            String json = JsonConvert.SerializeObject(client,new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await this.client.PostAsync(apiUrl+ "/client-management/clients", data);
-            if ((int)response.StatusCode == 200)
-                return true;
-            else return false;
+            try {
+                String json = JsonConvert.SerializeObject(client,new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await this.client.PostAsync(apiUrl+ "/client-management/clients", data);
+                string result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<ClientDTO>(result);
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
 
-        public async Task<bool> UpdateAsync(ClientUpdateDTO client, String id)
+        public async Task<ClientDTO> UpdateAsync(ClientUpdateDTO client, String id)
         {
-            String json = JsonConvert.SerializeObject(client, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await this.client.PutAsync(apiUrl + "/client-management/clients/"+id, data);
-            if ((int)response.StatusCode == 200)
-                return true;
-            else return false;
+            try { 
+                String json = JsonConvert.SerializeObject(client, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await this.client.PutAsync(apiUrl + "/client-management/clients/"+id, data);
+                string result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<ClientDTO>(result);
+            }
+            catch(System.Exception)
+            {
+                throw;
+            }
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        public async void DeleteAsync(string id)
         {
-            var response = await this.client.DeleteAsync(apiUrl + "/client-management/clients/" + id);
-            if ((int)response.StatusCode == 200)
-                return true;
-            else return false;
+            try
+            {
+                var response = await this.client.DeleteAsync(apiUrl + "/client-management/clients/" + id);
+            }
+            catch(System.Exception)
+            {
+                throw;
+            }
         }
     }
 }

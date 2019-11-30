@@ -29,7 +29,21 @@ namespace APICentral
         {
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IQuoteService, QuoteService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.WithOrigins("*")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod()
+                                      );
+            });
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAll"));
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Values Api", Version = "v1" });
@@ -47,7 +61,7 @@ namespace APICentral
             {
                 app.UseHsts();
             }
-
+            app.UseCors("AllowAll");
             /*app.UseCors(MyAllowSpecificOrigins);*/
             app.UseHttpsRedirection();
             app.UseMvc();
