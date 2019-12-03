@@ -14,7 +14,7 @@ namespace Services.Models
 
         public bool Sold { get; set; }
 
-        public List<ListItemDTO> QuoteListItems { get; set; } 
+        public List<ListItemDTO> QuoteLineItems { get; set; } 
 
     }
 }

@@ -24,7 +24,7 @@ namespace Services
 
         public async Task<QuoteSendDTO> GetQuoteAsync(String id)
         {
-            var response = await client.GetAsync(apiUrl + "/quoting-management/quotes/" + id);
+            var response = await client.GetAsync(apiUrl + "/quote-management/quotes/" + id);
             var resp = await response.Content.ReadAsStringAsync();
             QuoteDTO quoteDTO = JsonConvert.DeserializeObject<QuoteDTO>(resp);
             return TransformItemListAsync(quoteDTO).Result;
@@ -32,7 +32,7 @@ namespace Services
 
         public async Task<List<QuoteSendDTO>> GetAllQuoteAsync()
         {
-            var response = await client.GetAsync(apiUrl + "/quoting-management/quotes");
+            var response = await client.GetAsync(apiUrl + "/quote-management/quotes");
             var resp = await response.Content.ReadAsStringAsync();
             List<QuoteDTO> quotes = JsonConvert.DeserializeObject<List<QuoteDTO>>(resp);
             List<QuoteSendDTO> quotesSend = new List<QuoteSendDTO>();
@@ -45,7 +45,7 @@ namespace Services
 
         public async Task<List<QuoteSendDTO>> GetAllQuoteSoldAsync()
         {
-            var response = await client.GetAsync(apiUrl + "/quoting-management/quotes/sold");
+            var response = await client.GetAsync(apiUrl + "/quote-management/quotes/sold");
             var resp = await response.Content.ReadAsStringAsync();
             List<QuoteDTO> quotes = JsonConvert.DeserializeObject<List<QuoteDTO>>(resp);
             List<QuoteSendDTO> quotesSend = new List<QuoteSendDTO>();
@@ -58,7 +58,7 @@ namespace Services
 
         public async Task<List<QuoteSendDTO>> GetAllQuotePendingAsync()
         {
-            var response = await client.GetAsync(apiUrl + "/quoting-management/quotes/pending");
+            var response = await client.GetAsync(apiUrl + "/quote-management/quotes/pending");
             var resp = await response.Content.ReadAsStringAsync();
             List<QuoteDTO> quotes = JsonConvert.DeserializeObject<List<QuoteDTO>>(resp);
             List<QuoteSendDTO> quotesSend = new List<QuoteSendDTO>();
@@ -74,7 +74,7 @@ namespace Services
             try {
                 String json = JsonConvert.SerializeObject(quote, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PostAsync(apiUrl + "/quoting-management/quotes", data);
+                var response = await this.client.PostAsync(apiUrl + "/quote-management/quotes", data);
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<QuoteDTO>(result);
             }
@@ -90,7 +90,7 @@ namespace Services
             {
                 String json = JsonConvert.SerializeObject(quote, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PutAsync(apiUrl + "/quoting-management/quotes/" + id, data);
+                var response = await this.client.PutAsync(apiUrl + "/quote-management/quotes/" + id, data);
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<QuoteDTO>(result);
             }
@@ -104,7 +104,7 @@ namespace Services
         {
             try
             {
-                var response = await this.client.DeleteAsync(apiUrl + "/quoting-management/quotes/" + id);
+                var response = await this.client.DeleteAsync(apiUrl + "/quote-management/quotes/" + id);
             }
             catch (System.Exception)
             {
@@ -122,21 +122,21 @@ namespace Services
             ClientDTO clientDTO = JsonConvert.DeserializeObject<ClientDTO>(clientResponse.Content.ReadAsStringAsync().Result);
             quoteSendDTO.Client = clientDTO;
             quoteSendDTO.QuoteListItems = new List<ListItemSendDTO>();
-            if (quoteDTO.QuoteListItems.Count > 0)
+            if (quoteDTO.QuoteLineItems.Count > 0)
             {
-                string codes = quoteDTO.QuoteListItems[0].ProductCode;
-                for (int i = 1; i < quoteDTO.QuoteListItems.Count; i++)
+                string codes = quoteDTO.QuoteLineItems[0].ProductCode;
+                for (int i = 1; i < quoteDTO.QuoteLineItems.Count; i++)
                 {
-                    codes = codes +","+ quoteDTO.QuoteListItems[i].ProductCode;
+                    codes = codes +","+ quoteDTO.QuoteLineItems[i].ProductCode;
                 }
                 var productResponse = await client.GetAsync(_configuration.GetSection("MicroServices").GetSection("Products").Value + "/product-management/products?ids=" + codes);
                 List<ProductGetDTO> productos = JsonConvert.DeserializeObject<List<ProductGetDTO>>(productResponse.Content.ReadAsStringAsync().Result);
-                for (int i = 0; i < quoteDTO.QuoteListItems.Count; i++)
+                for (int i = 0; i < quoteDTO.QuoteLineItems.Count; i++)
                 {
                     ListItemSendDTO item= new ListItemSendDTO();
-                    item.Price = quoteDTO.QuoteListItems[i].Price;
-                    item.Quantity = quoteDTO.QuoteListItems[i].Quantity;
-                    item.QuoteName = quoteDTO.QuoteListItems[i].QuoteName;
+                    item.Price = quoteDTO.QuoteLineItems[i].Price;
+                    item.Quantity = quoteDTO.QuoteLineItems[i].Quantity;
+                    item.QuoteName = quoteDTO.QuoteLineItems[i].QuoteName;
                     item.Product = productos[i];
                     quoteSendDTO.QuoteListItems.Add(item);
                 }

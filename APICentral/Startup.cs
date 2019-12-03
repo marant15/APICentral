@@ -62,7 +62,6 @@ namespace APICentral
                 app.UseHsts();
             }
             app.UseCors("AllowAll");
-            /*app.UseCors(MyAllowSpecificOrigins);*/
             app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSwagger();
