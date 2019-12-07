@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APICentral.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -61,6 +62,8 @@ namespace APICentral
             {
                 app.UseHsts();
             }
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseMvc();

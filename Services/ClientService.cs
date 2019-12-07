@@ -24,18 +24,31 @@ namespace Services
 
         public async Task<ClientDTO> GetClientAsync(String id)
         {
-            var response = await client.GetAsync(apiUrl+"/client-management/clients/"+id);
-            var resp = await response.Content.ReadAsStringAsync();
-            ClientDTO clientDTO = JsonConvert.DeserializeObject<ClientDTO>(resp);
-            return clientDTO;
+            try
+            {
+                var response = await client.GetAsync(apiUrl + "/client-management/clients/" + id);
+                var resp = await response.Content.ReadAsStringAsync();
+                ClientDTO clientDTO = JsonConvert.DeserializeObject<ClientDTO>(resp);
+                return clientDTO;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<List<ClientDTO>> GetAllClientAsync()
         {
-            var response = await client.GetAsync(apiUrl + "/client-management/clients");
-            var resp = await response.Content.ReadAsStringAsync();
-            List<ClientDTO> clients = JsonConvert.DeserializeObject<List<ClientDTO>>(resp);
-            return clients;
+            try
+            {
+                var response = await client.GetAsync(apiUrl + "/client-management/clients");
+                var resp = await response.Content.ReadAsStringAsync();
+                List<ClientDTO> clients = JsonConvert.DeserializeObject<List<ClientDTO>>(resp);
+                return clients;
+            }catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<ClientDTO> CreateAsync(ClientDTO client)
@@ -47,9 +60,9 @@ namespace Services
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<ClientDTO>(result);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
         }
 
@@ -62,9 +75,9 @@ namespace Services
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<ClientDTO>(result);
             }
-            catch(System.Exception)
+            catch(Exception e)
             {
-                throw;
+                throw e;
             }
         }
 
@@ -74,9 +87,9 @@ namespace Services
             {
                 var response = await this.client.DeleteAsync(apiUrl + "/client-management/clients/" + id);
             }
-            catch(System.Exception)
+            catch(Exception e)
             {
-                throw;
+                throw e;
             }
         }
     }

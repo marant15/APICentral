@@ -23,26 +23,46 @@ namespace Services
         }
         public async Task<ProductGetDTO> GetProductAsync(String id)
         {
-            var response = await client.GetAsync(apiUrl + "/product-management/products/" + id);
-            var resp = await response.Content.ReadAsStringAsync();
-            ProductGetDTO productDTO = JsonConvert.DeserializeObject<ProductGetDTO>(resp);
-            return productDTO;
+            try
+            {
+                var response = await client.GetAsync(apiUrl + "/product-management/products/" + id);
+                var resp = await response.Content.ReadAsStringAsync();
+                ProductGetDTO productDTO = JsonConvert.DeserializeObject<ProductGetDTO>(resp);
+                return productDTO;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<List<ProductGetDTO>> GetAllProductsAsync()
         {
-            var response = await client.GetAsync(apiUrl + "/product-management/products");
-            var resp = await response.Content.ReadAsStringAsync();
-            List<ProductGetDTO> products = JsonConvert.DeserializeObject<List<ProductGetDTO>>(resp);
-            return products;
+            try
+            {
+                var response = await client.GetAsync(apiUrl + "/product-management/products");
+                var resp = await response.Content.ReadAsStringAsync();
+                List<ProductGetDTO> products = JsonConvert.DeserializeObject<List<ProductGetDTO>>(resp);
+                return products;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<List<ProductGetDTO>> GetSomeProductsAsync(string codes)
         {
-            var response = await client.GetAsync(apiUrl + "/product-management/products?ids="+codes);
-            var resp = await response.Content.ReadAsStringAsync();
-            List<ProductGetDTO> products = JsonConvert.DeserializeObject<List<ProductGetDTO>>(resp);
-            return products;
+            try
+            {
+                var response = await client.GetAsync(apiUrl + "/product-management/products?ids=" + codes);
+                var resp = await response.Content.ReadAsStringAsync();
+                List<ProductGetDTO> products = JsonConvert.DeserializeObject<List<ProductGetDTO>>(resp);
+                return products;
+            }catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<ProductGetDTO> CreateAsync(ProductPostDTO product)
@@ -54,9 +74,9 @@ namespace Services
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<ProductGetDTO>(result);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
 }
 
@@ -69,9 +89,9 @@ namespace Services
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<ProductGetDTO>(result);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
 }
 
@@ -80,9 +100,9 @@ namespace Services
             try {
                 var response = await this.client.DeleteAsync(apiUrl + "/product-management/products/" + id);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
 }
     }
