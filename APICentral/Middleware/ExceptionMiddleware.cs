@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Services;
 
 namespace APICentral.Middleware
 {
@@ -32,12 +33,23 @@ namespace APICentral.Middleware
 
         private static Task HandlerExceptionAsync(HttpContext context, Exception ex)
         {
+            int StatusCode = getCode(ex.InnerException);
             var errorObj = new
             {
-                code = ex.HResult,
-                Exception = ex
+                code = StatusCode,
+                message = ex.Message
             };
+            context.Response.StatusCode = StatusCode;
             return context.Response.WriteAsync(JsonConvert.SerializeObject(errorObj));
+        }
+
+        private static int getCode(Exception ex)
+        {
+            if(ex.GetType() == typeof(ServicesException))
+            {
+                return ((ServicesException)ex).code;
+            }
+            return 500;
         }
     }
 

@@ -25,14 +25,18 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/product-management/products/" + id);
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/product-management/products/" + id);
+                string resp = await ResponseUtility.Verification(response);
                 ProductGetDTO productDTO = JsonConvert.DeserializeObject<ProductGetDTO>(resp);
                 return productDTO;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Product api not found", 408);
             }
         }
 
@@ -40,14 +44,18 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/product-management/products");
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/product-management/products");
+                string resp = await ResponseUtility.Verification(response);
                 List<ProductGetDTO> products = JsonConvert.DeserializeObject<List<ProductGetDTO>>(resp);
                 return products;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Product api not found", 408);
             }
         }
 
@@ -55,13 +63,18 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/product-management/products?ids=" + codes);
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/product-management/products?ids=" + codes);
+                string resp = await ResponseUtility.Verification(response);
                 List<ProductGetDTO> products = JsonConvert.DeserializeObject<List<ProductGetDTO>>(resp);
                 return products;
-            }catch(Exception e)
+            }
+            catch (ServicesException ex)
             {
-                throw e;
+                throw ex;
+            }
+            catch (Exception e)
+            {
+                throw new ServicesException("Product api not found", 408);
             }
         }
 
@@ -70,40 +83,53 @@ namespace Services
             try {
                 String json = JsonConvert.SerializeObject(product, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PostAsync(apiUrl + "/product-management/products", data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await this.client.PostAsync(apiUrl + "/product-management/products", data);
+                string result = await ResponseUtility.Verification(response);
                 return JsonConvert.DeserializeObject<ProductGetDTO>(result);
+            }
+            catch (ServicesException ex)
+            {
+                throw ex;
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Product api not found", 408);
             }
-}
+        }
 
         public async Task<ProductGetDTO> UpdateAsync(ProductPutDTO product, String id)
         {
             try {
                 String json = JsonConvert.SerializeObject(product, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PutAsync(apiUrl + "/product-management/products/" + id, data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await this.client.PutAsync(apiUrl + "/product-management/products/" + id, data);
+                string result = await ResponseUtility.Verification(response);
                 return JsonConvert.DeserializeObject<ProductGetDTO>(result);
+            }
+            catch (ServicesException ex)
+            {
+                throw ex;
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Product api not found", 408);
             }
-}
+        }
 
         public async void DeleteAsync(string id)
         {
             try {
-                var response = await this.client.DeleteAsync(apiUrl + "/product-management/products/" + id);
+                HttpResponseMessage response = await this.client.DeleteAsync(apiUrl + "/product-management/products/" + id);
+                string result = await ResponseUtility.Verification(response);
+            }
+            catch (ServicesException ex)
+            {
+                throw ex;
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Product api not found", 408);
             }
-}
+        }
     }
 }

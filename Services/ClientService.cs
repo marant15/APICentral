@@ -37,7 +37,7 @@ namespace Services
             }
             catch (Exception e)
             {
-                throw new ServicesException("Client api not found",408);
+                throw new ServicesException("Client api not found", 408);
             }
         }
 

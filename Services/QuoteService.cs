@@ -26,14 +26,18 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/quote-management/quotes/" + id);
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/quote-management/quotes/" + id);
+                string resp = await ResponseUtility.Verification(response);
                 QuoteDTO quoteDTO = JsonConvert.DeserializeObject<QuoteDTO>(resp);
                 return TransformItemListAsync(quoteDTO).Result;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -41,8 +45,8 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/quote-management/quotes");
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/quote-management/quotes");
+                string resp = await ResponseUtility.Verification(response);
                 List<QuoteDTO> quotes = JsonConvert.DeserializeObject<List<QuoteDTO>>(resp);
                 List<QuoteSendDTO> quotesSend = new List<QuoteSendDTO>();
                 for (int i = 0; i < quotes.Count; i++)
@@ -51,9 +55,13 @@ namespace Services
                 }
                 return quotesSend;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -61,8 +69,8 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/quote-management/quotes/sold");
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/quote-management/quotes/sold");
+                string resp = await ResponseUtility.Verification(response);
                 List<QuoteDTO> quotes = JsonConvert.DeserializeObject<List<QuoteDTO>>(resp);
                 List<QuoteSendDTO> quotesSend = new List<QuoteSendDTO>();
                 for (int i = 0; i < quotes.Count; i++)
@@ -71,9 +79,13 @@ namespace Services
                 }
                 return quotesSend;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -81,8 +93,8 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/quote-management/quotes/pending");
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/quote-management/quotes/pending");
+                string resp = await ResponseUtility.Verification(response);
                 List<QuoteDTO> quotes = JsonConvert.DeserializeObject<List<QuoteDTO>>(resp);
                 List<QuoteSendDTO> quotesSend = new List<QuoteSendDTO>();
                 for (int i = 0; i < quotes.Count; i++)
@@ -91,9 +103,13 @@ namespace Services
                 }
                 return quotesSend;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -102,13 +118,17 @@ namespace Services
             try {
                 String json = JsonConvert.SerializeObject(quote, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PostAsync(apiUrl + "/quote-management/quotes", data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await this.client.PostAsync(apiUrl + "/quote-management/quotes", data);
+                string result = await ResponseUtility.Verification(response);
                 return JsonConvert.DeserializeObject<QuoteDTO>(result);
             }
-            catch(Exception e)
+            catch (ServicesException ex)
             {
-                throw e;
+                throw ex;
+            }
+            catch (Exception e)
+            {
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -118,13 +138,17 @@ namespace Services
             {
                 String json = JsonConvert.SerializeObject(quote, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PutAsync(apiUrl + "/quote-management/quotes/" + id, data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await this.client.PutAsync(apiUrl + "/quote-management/quotes/" + id, data);
+                string result = await ResponseUtility.Verification(response);
                 return JsonConvert.DeserializeObject<QuoteDTO>(result);
+            }
+            catch (ServicesException ex)
+            {
+                throw ex;
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -132,11 +156,16 @@ namespace Services
         {
             try
             {
-                var response = await this.client.DeleteAsync(apiUrl + "/quote-management/quotes/" + id);
+                HttpResponseMessage response = await this.client.DeleteAsync(apiUrl + "/quote-management/quotes/" + id);
+                string result = await ResponseUtility.Verification(response);
+            }
+            catch (ServicesException ex)
+            {
+                throw ex;
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Quote api not found", 408);
             }
         }
 
@@ -146,8 +175,9 @@ namespace Services
             quoteSendDTO.Sold = quoteDTO.Sold;
             quoteSendDTO.Date = quoteDTO.Date;
             quoteSendDTO.QuoteName = quoteDTO.QuoteName;
-            var clientResponse = await client.GetAsync(_configuration.GetSection("MicroServices").GetSection("Clients").Value + "/client-management/clients/" + quoteDTO.ClientCode);
-            ClientDTO clientDTO = JsonConvert.DeserializeObject<ClientDTO>(clientResponse.Content.ReadAsStringAsync().Result);
+            HttpResponseMessage clientResponse = await client.GetAsync(_configuration.GetSection("MicroServices").GetSection("Clients").Value + "/client-management/clients/" + quoteDTO.ClientCode);
+            string clientResult = await ResponseUtility.Verification(clientResponse);
+            ClientDTO clientDTO = JsonConvert.DeserializeObject<ClientDTO>(clientResult);
             quoteSendDTO.Client = clientDTO;
             quoteSendDTO.QuoteListItems = new List<ListItemSendDTO>();
             if (quoteDTO.QuoteLineItems.Count > 0)
@@ -157,15 +187,16 @@ namespace Services
                 {
                     codes = codes +","+ quoteDTO.QuoteLineItems[i].ProductCode;
                 }
-                var productResponse = await client.GetAsync(_configuration.GetSection("MicroServices").GetSection("Products").Value + "/product-management/products?ids=" + codes);
-                List<ProductGetDTO> productos = JsonConvert.DeserializeObject<List<ProductGetDTO>>(productResponse.Content.ReadAsStringAsync().Result);
+                HttpResponseMessage productResponse = await client.GetAsync(_configuration.GetSection("MicroServices").GetSection("Products").Value + "/product-management/products?ids=" + codes);
+                string productResult = await ResponseUtility.Verification(productResponse);
+                List<ProductGetDTO> productos = JsonConvert.DeserializeObject<List<ProductGetDTO>>(productResult);
                 for (int i = 0; i < quoteDTO.QuoteLineItems.Count; i++)
                 {
                     ListItemSendDTO item= new ListItemSendDTO();
                     item.Price = quoteDTO.QuoteLineItems[i].Price;
                     item.Quantity = quoteDTO.QuoteLineItems[i].Quantity;
                     item.QuoteName = quoteDTO.QuoteLineItems[i].QuoteName;
-                    item.Product = productos[i];
+                    item.Product = productos.Find(x => x.Code.Equals(quoteDTO.QuoteLineItems[i].ProductCode));
                     quoteSendDTO.QuoteListItems.Add(item);
                 }
             }
