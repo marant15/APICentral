@@ -33,13 +33,13 @@ namespace APICentral.Middleware
 
         private static Task HandlerExceptionAsync(HttpContext context, Exception ex)
         {
-            int StatusCode = getCode(ex.InnerException);
+            int statusCode = getCode(ex.InnerException);
             var errorObj = new
             {
-                code = StatusCode,
-                message = ex.Message
+                Code = statusCode,
+                Message = ex.Message
             };
-            context.Response.StatusCode = StatusCode;
+            context.Response.StatusCode = statusCode;
             return context.Response.WriteAsync(JsonConvert.SerializeObject(errorObj));
         }
 
