@@ -26,14 +26,18 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/client-management/clients/" + id);
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/client-management/clients/" + id);
+                string resp = await ResponseUtility.Verification(response);
                 ClientDTO clientDTO = JsonConvert.DeserializeObject<ClientDTO>(resp);
                 return clientDTO;
             }
+            catch (ServicesException ex)
+            {
+                throw ex;
+            }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Client api not found",408);
             }
         }
 
@@ -41,13 +45,18 @@ namespace Services
         {
             try
             {
-                var response = await client.GetAsync(apiUrl + "/client-management/clients");
-                var resp = await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await client.GetAsync(apiUrl + "/client-management/clients");
+                string resp = await ResponseUtility.Verification(response);
                 List<ClientDTO> clients = JsonConvert.DeserializeObject<List<ClientDTO>>(resp);
                 return clients;
-            }catch(Exception e)
+            }
+            catch (ServicesException ex)
             {
-                throw e;
+                throw ex;
+            }
+            catch (Exception e)
+            {
+                throw new ServicesException("Client api not found", 408);
             }
         }
 
@@ -56,13 +65,17 @@ namespace Services
             try {
                 String json = JsonConvert.SerializeObject(client,new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PostAsync(apiUrl+ "/client-management/clients", data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await this.client.PostAsync(apiUrl+ "/client-management/clients", data);
+                string result = await ResponseUtility.Verification(response);
                 return JsonConvert.DeserializeObject<ClientDTO>(result);
+            }
+            catch (ServicesException ex)
+            {
+                throw ex;
             }
             catch (Exception e)
             {
-                throw e;
+                throw new ServicesException("Client api not found", 408);
             }
         }
 
@@ -71,13 +84,17 @@ namespace Services
             try { 
                 String json = JsonConvert.SerializeObject(client, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await this.client.PutAsync(apiUrl + "/client-management/clients/"+id, data);
-                string result = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await this.client.PutAsync(apiUrl + "/client-management/clients/"+id, data);
+                string result = await ResponseUtility.Verification(response);
                 return JsonConvert.DeserializeObject<ClientDTO>(result);
             }
-            catch(Exception e)
+            catch (ServicesException ex)
             {
-                throw e;
+                throw ex;
+            }
+            catch (Exception e)
+            {
+                throw new ServicesException("Client api not found", 408);
             }
         }
 
@@ -85,11 +102,16 @@ namespace Services
         {
             try
             {
-                var response = await this.client.DeleteAsync(apiUrl + "/client-management/clients/" + id);
+                HttpResponseMessage response = await this.client.DeleteAsync(apiUrl + "/client-management/clients/" + id);
+                string result = await ResponseUtility.Verification(response);
             }
-            catch(Exception e)
+            catch (ServicesException ex)
             {
-                throw e;
+                throw ex;
+            }
+            catch (Exception e)
+            {
+                throw new ServicesException("Client api not found", 408);
             }
         }
     }

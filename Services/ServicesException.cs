@@ -6,9 +6,10 @@ namespace Services
 {
     public class ServicesException:Exception
     {
-        public ServicesException(string msg, int code)
+        public int code;
+        public ServicesException(string msg,int code):base(msg)
         {
-     
+            this.code = code;
         }
     }
 }
