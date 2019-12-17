@@ -39,6 +39,7 @@ namespace APICentral.Middleware
                 Code = statusCode,
                 Message = ex.Message
             };
+            context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
             return context.Response.WriteAsync(JsonConvert.SerializeObject(errorObj));
         }

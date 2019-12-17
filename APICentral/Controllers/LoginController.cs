@@ -18,6 +18,7 @@ namespace APICentral.Controllers
         }
 
         [Route("crm-api/login")]
+        [HttpPost]
         public IActionResult Login([FromHeader]string authorization)
         {
             Guid sessionId = _authService.login(authorization);
@@ -28,17 +29,9 @@ namespace APICentral.Controllers
             }
             else 
             {
-                return Unauthorized();
+                throw new UnauthorizedAccessException("Unauthorized");
             }
             
-        }
-        [Route("crm-api/validate")]
-        public IActionResult ValidateSession([FromHeader]string authorization) 
-        {
-            if (_authService.ValidateUser(authorization))
-                return Ok();
-            else
-                return Unauthorized();
         }
     }
 }

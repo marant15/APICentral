@@ -10,17 +10,11 @@ namespace Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        private HttpClient client;
-        //private String apiUrl;
-        private IConfiguration _configuration;
-
         public List<sessionDTO> sessions  = new List<sessionDTO>();
 
-        public AuthorizationService (IConfiguration configuration)
+        public AuthorizationService ()
         {
-            this._configuration = configuration;
-            //apiUrl = configuration.GetSection("MicroServices").GetSection("Quotes").Value;
-            client = new HttpClient();
+            
         }
 
         public Guid login(string authorization)
@@ -43,7 +37,7 @@ namespace Services
                 if (users[i].Username == userName && users[i].PassWord == passWord)
                 {
                     valido = true;
-                    sessionID = new Guid();
+                    sessionID = Guid.NewGuid();
                 }
             }
 
@@ -60,14 +54,16 @@ namespace Services
 
         public Boolean ValidateUser(string bearer) 
         {
-            return sessions.Exists(session => session.session.Equals(bearer.Replace("bearer", "")));
+            string token = bearer.Split(" ")[1];
+            bool isSessionValid = sessions.Exists(session => session.session.ToString().Equals(token));
+            return isSessionValid;
         }
 
         private List<UserDTO> getAllUsers()
         {
             List<UserDTO> users = new List<UserDTO>() {
-                new UserDTO() { Username = "nachoPicante", PassWord = "nachitorico" },
-                new UserDTO() { Username = "WowBlast", PassWord = "jhoncito" }
+                new UserDTO() { Username = "admin", PassWord = "admin" },
+                new UserDTO() { Username = "user", PassWord = "user" }
             };
             return users;
         }
