@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -11,6 +12,8 @@ namespace APICentral.Controllers
 {
     public class LoginController : Controller
     {
+
+
         private IAuthorizationService _authService;
         public LoginController(IAuthorizationService auth) 
         {
@@ -18,27 +21,22 @@ namespace APICentral.Controllers
         }
 
         [Route("crm-api/login")]
+        [HttpPost]
+
         public IActionResult Login([FromHeader]string authorization)
         {
             Guid sessionId = _authService.login(authorization);
             if (sessionId != Guid.Empty)
             {
-                HttpContext.Response.Headers.Add("Authorization", sessionId.ToString());
+                HttpContext.Response.Headers.Add("Authorization", "Bearer " + sessionId.ToString());
+                Console.WriteLine("FOTO DE SEMESTRE: " + HttpContext.Response.Headers["Authorization"]);
                 return Ok();
             }
             else 
             {
-                return Unauthorized();
+                throw new UnauthorizedAccessException("Unauthorized");
             }
             
-        }
-        [Route("crm-api/validate")]
-        public IActionResult ValidateSession([FromHeader]string authorization) 
-        {
-            if (_authService.ValidateUser(authorization))
-                return Ok();
-            else
-                return Unauthorized();
         }
     }
 }

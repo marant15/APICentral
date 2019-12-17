@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Cors;
 using APICentral.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,7 @@ namespace APICentral
                     builder => builder.WithOrigins("*")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
+                                      .WithExposedHeaders("Authorization")
                                       );
             });
             services.Configure<MvcOptions>(options =>
@@ -65,7 +67,6 @@ namespace APICentral
             }
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<AuthorizationMiddleware>();
-
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseMvc();
