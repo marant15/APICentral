@@ -31,6 +31,7 @@ namespace APICentral
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IQuoteService, QuoteService>();
+            services.AddSingleton<IAuthorizationService, AuthorizationService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors(options =>
             {
@@ -63,6 +64,7 @@ namespace APICentral
                 app.UseHsts();
             }
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<AuthorizationMiddleware>();
 
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();

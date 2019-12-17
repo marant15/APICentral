@@ -33,7 +33,7 @@ namespace APICentral.Middleware
 
         private static Task HandlerExceptionAsync(HttpContext context, Exception ex)
         {
-            int statusCode = getCode(ex.InnerException);
+            int statusCode = getCode(ex);
             var errorObj = new
             {
                 Code = statusCode,
@@ -45,11 +45,16 @@ namespace APICentral.Middleware
 
         private static int getCode(Exception ex)
         {
+            int code = 500;
+            if (ex.GetType() == typeof(UnauthorizedAccessException))
+            {
+                code = 401;
+            }
             if(ex.GetType() == typeof(ServicesException))
             {
                 return ((ServicesException)ex).code;
             }
-            return 500;
+            return code;
         }
     }
 
