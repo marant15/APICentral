@@ -39,6 +39,7 @@ namespace APICentral.Middleware
             else
             {
                 string bearerTOken = httpContext.Request.Headers["Authorization"];
+                Console.WriteLine("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + bearerTOken);
                 if (!String.IsNullOrEmpty(bearerTOken))
                 {
                     string[] typeOfAuth = bearerTOken.Split(" ");
@@ -53,10 +54,15 @@ namespace APICentral.Middleware
                             throw new UnauthorizedAccessException("Unauthorized");
                         }
                     }
+                    else
+                    {
+                        throw new UnauthorizedAccessException("Unauthorized");
+
+                    }
                 }
                 else
                 {
-                    throw new ArgumentNullException("Token null");
+                    throw new ArgumentNullException("Token");
                 }
             }
         }
