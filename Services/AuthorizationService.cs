@@ -19,10 +19,11 @@ namespace Services
 
         public Guid login(string authorization)
         {
-            string token = authorization.Split(" ")[1];
-            string decodeToken = Encoding.UTF8.GetString(Convert.FromBase64String(token), 0, Convert.FromBase64String(token).Length);
-            string userName = decodeToken.Split(":")[0];
-            string passWord = decodeToken.Split(":")[1];
+            Console.WriteLine(authorization);
+            string token = authorization;
+            string userName = token.Split(":")[0];
+            string codepassWord = token.Split(":")[1];
+            string passWord = Encoding.UTF8.GetString(Convert.FromBase64String(codepassWord), 0, Convert.FromBase64String(codepassWord).Length);
             Guid session = GetSessionGuid(userName, passWord);
             return session;
         }
