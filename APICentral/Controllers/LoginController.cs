@@ -10,9 +10,10 @@ using Services;
 
 namespace APICentral.Controllers
 {
-    [EnableCors(origins: "http://192.168.44.93:8090", headers: "*", methods: "*", exposedHeaders: "Authorization")]
     public class LoginController : Controller
     {
+
+
         private IAuthorizationService _authService;
         public LoginController(IAuthorizationService auth) 
         {
@@ -21,6 +22,7 @@ namespace APICentral.Controllers
 
         [Route("crm-api/login")]
         [HttpPost]
+
         public IActionResult Login([FromHeader]string authorization)
         {
             Guid sessionId = _authService.login(authorization);

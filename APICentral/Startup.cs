@@ -18,7 +18,6 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace APICentral
 {
-    [EnableCors(origins: "http://192.168.44.93:8090", headers: "*", methods: "*", exposedHeaders: "Authorization")]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -41,6 +40,7 @@ namespace APICentral
                     builder => builder.WithOrigins("*")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod()
+                                      .WithExposedHeaders("Authorization")
                                       );
             });
             services.Configure<MvcOptions>(options =>
@@ -67,7 +67,6 @@ namespace APICentral
             }
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<AuthorizationMiddleware>();
-
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseMvc();
