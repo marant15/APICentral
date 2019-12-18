@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Cors;
 using APICentral.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace APICentral
 {
+    [EnableCors(origins: "http://192.168.44.93:8090", headers: "*", methods: "*", exposedHeaders: "Authorization")]
     public class Startup
     {
         public Startup(IConfiguration configuration)

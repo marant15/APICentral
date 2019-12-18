@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -9,6 +10,7 @@ using Services;
 
 namespace APICentral.Controllers
 {
+    [EnableCors(origins: "http://192.168.44.93:8090", headers: "*", methods: "*", exposedHeaders: "Authorization")]
     public class LoginController : Controller
     {
         private IAuthorizationService _authService;
@@ -24,7 +26,8 @@ namespace APICentral.Controllers
             Guid sessionId = _authService.login(authorization);
             if (sessionId != Guid.Empty)
             {
-                HttpContext.Response.Headers.Add("Authorization", sessionId.ToString());
+                HttpContext.Response.Headers.Add("Authorization", "Bearer " + sessionId.ToString());
+                Console.WriteLine("FOTO DE SEMESTRE: " + HttpContext.Response.Headers["Authorization"]);
                 return Ok();
             }
             else 
