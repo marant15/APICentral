@@ -25,6 +25,9 @@ namespace APICentral.Middleware
             {
                 await _next(httpContext);
             }
+            catch (ServicesException e) {
+                await HandlerExceptionAsync(httpContext, e);
+            }
             catch (Exception e)
             {
                 await HandlerExceptionAsync(httpContext, e);
