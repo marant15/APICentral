@@ -19,6 +19,17 @@ namespace APICentral
 {
     public class Startup
     {
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
+
+            Console.WriteLine("ENV ===> " + $"appsettings.{env.EnvironmentName}.json");
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
