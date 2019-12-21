@@ -19,7 +19,7 @@ namespace APICentral
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            .UseUrls("http://localhost:8090")
+            .UseUrls("http://192.168.137.1:8090")
                 .UseStartup<Startup>();
     }
 }
